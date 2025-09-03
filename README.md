@@ -1,16 +1,16 @@
 <h1 align='center'> quart_minify </h1>
 <p align='center'>
 <a href='https://pypi.org/project/Quart-Minify/'>
-    <img src='https://img.shields.io/github/v/tag/mrf345/quart_minify' alt='Latest Release' />
+    <img src='https://img.shields.io/github/v/tag/hnguyen1910/quart_minify' alt='Latest Release' />
 </a>
-<a href='https://github.com/mrf345/quart_minify/actions/workflows/ci.yml'>
-  <img src='https://github.com/mrf345/quart_minify/actions/workflows/ci.yml/badge.svg'>
+<a href='https://github.com/hnguyen1910/quart_minify/actions/workflows/ci.yml'>
+  <img src='https://github.com/hnguyen1910/quart_minify/actions/workflows/ci.yml/badge.svg'>
 </a>
 <br />
 <img src='https://img.shields.io/pypi/pyversions/quart_minify' alt='Supported versions' />
 <br />
-<a href='https://github.com/mrf345/quart_minify/actions/workflows/ci.yml'>
-  <img src='https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/mrf345/bc746d7bfe356b54fbb93b2ea5d0d2a4/raw/quart_minify__heads_master.json' alt='Coverage Percentage' />
+<a href='https://github.com/hnguyen1910/quart_minify/actions/workflows/ci.yml'>
+  <img src='https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/hnguyen1910/bc746d7bfe356b54fbb93b2ea5d0d2a4/raw/quart_minify__heads_master.json' alt='Coverage Percentage' />
 </a>
 <a href='https://github.com/PyCQA/bandit'>
   <img src='https://img.shields.io/badge/security-bandit-yellow.svg' alt='security: bandit' />
@@ -22,6 +22,8 @@
 </p>
 
 <h3 align='center'>Quart extension to parse and minify html, javascript, css and less.</h3>
+
+<h2>I KNOW MY CODE IS STUPID SO DON'T USE IT IN PRODUCTION , I'M STILL TESTING THIS THING.</h2>
 
 ## Install:
 
@@ -35,7 +37,7 @@ for better performance (almost two times) you can use the optional [go dependenc
 
 With **setup-tools**
 
-- `git clone https://github.com/mrf345/quart_minify.git`
+- `git clone https://github.com/hnguyen1910/quart_minify.git`
 - `cd quart_minify`
 - `python setup.py install`
 
@@ -143,7 +145,7 @@ parsers = {'style': CustomCssParser}
 Minify(app=app, parsers=parsers)
 ```
 
-the **default** parsers are set to `{"html": Html, "script": Jsmin, "style": Rcssmin}` check out [the code](https://github.com/mrf345/quart_minify/blob/master/quart_minify/parsers.py) for more insight.
+the **default** parsers are set to `{"html": Html, "script": Jsmin, "style": Rcssmin}` check out [the code](https://github.com/hnguyen1910/quart_minify/blob/master/quart_minify/parsers.py) for more insight.
 
 
 ## Development:
@@ -165,4 +167,4 @@ Due to a future deprecation in Quart 2.3, the extension is no longer going to fa
 #### `0.33`
 
 introduces a breaking change to the expected output, in this release `lesscpy` will be replaced by `cssmin` as
-the default css minifier so no more `less` compiling by default. in case you don't want that, follow [this example](https://github.com/mrf345/quart_minify#--parsers). 
+the default css minifier so no more `less` compiling by default. in case you don't want that, follow [this example](https://github.com/hnguyen1910/quart_minify#--parsers). 
