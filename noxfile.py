@@ -5,7 +5,7 @@ import nox
 nox.options.sessions = ["lint", "test"]
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-about_path = os.path.join(basedir, os.path.join("flask_minify", "about.py"))
+about_path = os.path.join(basedir, os.path.join("quart_minify", "about.py"))
 about_content = ""
 test_req_path = os.path.join("requirements", "test.txt")
 dev_req_path = os.path.join("requirements", "dev.txt")
@@ -43,7 +43,7 @@ def release(session: nox.Session):
     session.install("-r", dev_req_path)
     session.run("python", "setup.py", "sdist", "bdist_wheel")
     session.run("python", "-m", "twine", "upload", "dist/*")
-    session.run("rm", "-rf", "dist", "build", "Flask_Minify.egg-info", ".eggs")
+    session.run("rm", "-rf", "dist", "build", "Quart_Minify.egg-info", ".eggs")
 
 
 @nox.session

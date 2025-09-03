@@ -1,7 +1,7 @@
 from functools import wraps
 
-from flask_minify.cache import MemoryCache
-from flask_minify.parsers import Parser
+from quart_minify.cache import MemoryCache
+from quart_minify.parsers import Parser
 
 
 def minify(

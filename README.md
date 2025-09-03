@@ -1,16 +1,16 @@
-<h1 align='center'> flask_minify </h1>
+<h1 align='center'> quart_minify </h1>
 <p align='center'>
-<a href='https://pypi.org/project/Flask-Minify/'>
-    <img src='https://img.shields.io/github/v/tag/mrf345/flask_minify' alt='Latest Release' />
+<a href='https://pypi.org/project/Quart-Minify/'>
+    <img src='https://img.shields.io/github/v/tag/mrf345/quart_minify' alt='Latest Release' />
 </a>
-<a href='https://github.com/mrf345/flask_minify/actions/workflows/ci.yml'>
-  <img src='https://github.com/mrf345/flask_minify/actions/workflows/ci.yml/badge.svg'>
+<a href='https://github.com/mrf345/quart_minify/actions/workflows/ci.yml'>
+  <img src='https://github.com/mrf345/quart_minify/actions/workflows/ci.yml/badge.svg'>
 </a>
 <br />
-<img src='https://img.shields.io/pypi/pyversions/flask_minify' alt='Supported versions' />
+<img src='https://img.shields.io/pypi/pyversions/quart_minify' alt='Supported versions' />
 <br />
-<a href='https://github.com/mrf345/flask_minify/actions/workflows/ci.yml'>
-  <img src='https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/mrf345/bc746d7bfe356b54fbb93b2ea5d0d2a4/raw/flask_minify__heads_master.json' alt='Coverage Percentage' />
+<a href='https://github.com/mrf345/quart_minify/actions/workflows/ci.yml'>
+  <img src='https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/mrf345/bc746d7bfe356b54fbb93b2ea5d0d2a4/raw/quart_minify__heads_master.json' alt='Coverage Percentage' />
 </a>
 <a href='https://github.com/PyCQA/bandit'>
   <img src='https://img.shields.io/badge/security-bandit-yellow.svg' alt='security: bandit' />
@@ -21,22 +21,22 @@
 <br />
 </p>
 
-<h3 align='center'>Flask extension to parse and minify html, javascript, css and less.</h3>
+<h3 align='center'>Quart extension to parse and minify html, javascript, css and less.</h3>
 
 ## Install:
 
 With **pip**
 
-- `pip install Flask-Minify`
+- `pip install Quart-Minify`
 
 for better performance (almost two times) you can use the optional [go dependency](https://pypi.org/project/tdewolff-minify/) [only Linux supported]
 
-- `pip install Flask-Minify[go]`
+- `pip install Quart-Minify[go]`
 
 With **setup-tools**
 
-- `git clone https://github.com/mrf345/flask_minify.git`
-- `cd flask_minify`
+- `git clone https://github.com/mrf345/quart_minify.git`
+- `cd quart_minify`
 - `python setup.py install`
 
 ## Setup:
@@ -44,20 +44,20 @@ With **setup-tools**
 In this example the  extension will minify every HTML request, unless it's explicitly bypassed.
 
 ```python
-from flask import Flask
-from flask_minify import Minify
+from quart import Quart
+from quart_minify import Minify
 
-app = Flask(__name__)
+app = Quart(__name__)
 Minify(app=app, html=True, js=True, cssless=True)
 ```
 
 Another approach is using **decorators**, you can set the extension to be `passive` so will only minify the decorated routes
 
 ```python
-from flask import Flask
-from flask_minify import Minify, decorators as minify_decorators
+from quart import Quart
+from quart_minify import Minify, decorators as minify_decorators
 
-app = Flask(__name__)
+app = Quart(__name__)
 Minify(app=app, passive=True)
 
 @app.route('/')
@@ -71,7 +71,7 @@ def example():
 
 Option             | type     | Description
 -------------------|----------|-------------
- app               | `object` | `Flask` app instance to be passed (default: `None`)
+ app               | `object` | `Quart` app instance to be passed (default: `None`)
  html              | `bool`   | minify HTML (default: `True`)
  js                | `bool`   | minify JavaScript output (default: `True`)
  cssless           | `bool`   | minify CSS or Less. (default: `True`)
@@ -120,7 +120,7 @@ allows passing tag specific options to the module responsible for the minificati
 In the following example will replace the default `style` (handles CSS) parser `rcssmin` with `lesscpy`:
 
 ```python
-from flask_minify import Minify, parsers as minify_parsers
+from quart_minify import Minify, parsers as minify_parsers
 
 parsers = {'style': minify_parsers.Lesscpy}
 
@@ -130,7 +130,7 @@ Minify(app=app, parsers=parsers)
 you can override the default parser runtime options as well, as shown in the following example:
 
 ```python
-from flask_minify import Minify, parsers as minify_parsers
+from quart_minify import Minify, parsers as minify_parsers
 
 class CustomCssParser(minify_parsers.Lesscpy):
     runtime_options = {
@@ -143,7 +143,7 @@ parsers = {'style': CustomCssParser}
 Minify(app=app, parsers=parsers)
 ```
 
-the **default** parsers are set to `{"html": Html, "script": Jsmin, "style": Rcssmin}` check out [the code](https://github.com/mrf345/flask_minify/blob/master/flask_minify/parsers.py) for more insight.
+the **default** parsers are set to `{"html": Html, "script": Jsmin, "style": Rcssmin}` check out [the code](https://github.com/mrf345/quart_minify/blob/master/quart_minify/parsers.py) for more insight.
 
 
 ## Development:
@@ -160,9 +160,9 @@ Introduced more performant parsers that will be enabled by default, if you're ru
 
 #### `0.40`
 
-Due to a future deprecation in Flask 2.3, the extension is no longer going to fallback to `Flask._app_ctx_stack`, it will raise an exception instead (`flask_minify.exceptions.MissingApp`)
+Due to a future deprecation in Quart 2.3, the extension is no longer going to fallback to `Quart._app_ctx_stack`, it will raise an exception instead (`quart_minify.exceptions.MissingApp`)
 
 #### `0.33`
 
 introduces a breaking change to the expected output, in this release `lesscpy` will be replaced by `cssmin` as
-the default css minifier so no more `less` compiling by default. in case you don't want that, follow [this example](https://github.com/mrf345/flask_minify#--parsers). 
+the default css minifier so no more `less` compiling by default. in case you don't want that, follow [this example](https://github.com/mrf345/quart_minify#--parsers). 

@@ -1,15 +1,15 @@
 from itertools import tee
 from re import compile as compile_re
 
-from flask import current_app, request
+from quart import current_app, request
 
-from flask_minify.cache import MemoryCache
-from flask_minify.parsers import Parser
-from flask_minify.utils import does_content_type_match
+from quart_minify.cache import MemoryCache
+from quart_minify.parsers import Parser
+from quart_minify.utils import does_content_type_match
 
 
 class Minify:
-    "Extension to minify flask response for html, javascript, css and less."
+    "Extension to minify quart response for html, javascript, css and less."
 
     def __init__(
         self,
@@ -27,12 +27,12 @@ class Minify:
         parsers={},
         go=True,
     ):
-        """Extension to minify flask response for html, javascript, css and less.
+        """Extension to minify quart response for html, javascript, css and less.
 
         Parameters
         ----------
-        app: Flask.app
-            Flask app instance to be passed.
+        app: Quart.app
+            Quart app instance to be passed.
         html: bool
             to minify HTML.
         js: bool
@@ -98,7 +98,7 @@ class Minify:
 
         app and self.init_app(app)
 
-    def get_endpoint(self):
+    async def get_endpoint(self):
         """Get the current response endpoint, with a failsafe.
 
         Returns
@@ -106,7 +106,7 @@ class Minify:
         str
             the current endpoint.
         """
-        with self.app.app_context():
+        async with self.app.app_context():
             path = getattr(request, "endpoint", "") or ""
 
             if path == "static":
@@ -116,12 +116,12 @@ class Minify:
 
     @property
     def app(self):
-        """If app was passed take it, otherwise fallback to `Flask.current_app`.
+        """If app was passed take it, otherwise fallback to `Quart.current_app`.
 
         Returns
         -------
-        Flask App
-            The current Flask application.
+        Quart App
+            The current Quart application.
         """
         return self._app or current_app
 
@@ -135,7 +135,7 @@ class Minify:
         """Nothing todo on app context teardown XXX:Factory Method"""
         pass
 
-    def get_minified_or_cached(self, content, tag):
+    async def get_minified_or_cached(self, content, tag):
         """Check if the content is already cached and restore or store it.
 
         Parameters
@@ -150,15 +150,15 @@ class Minify:
         str
             stored or restored minifed content.
         """
-        _, bypassed = self.get_endpoint_matches(self.bypass_caching)
+        _, bypassed = await self.get_endpoint_matches(self.bypass_caching)
         get_minified = lambda: self.parser.minify(content, tag)
 
         if bypassed:
             return get_minified()
 
-        return self.cache.get_or_set(content, get_minified)
+        return await self.cache.get_or_set(content, get_minified)
 
-    def get_endpoint_matches(self, patterns):
+    async def get_endpoint_matches(self, patterns):
         """Get the patterns that matches the current endpoint.
 
         Parameters
@@ -171,7 +171,7 @@ class Minify:
         (iterable, bool)
             patterns that match the current endpoint, and True if any matches found
         """
-        endpoint = self.get_endpoint()
+        endpoint = await self.get_endpoint()
         matches, duplicates = tee(
             p for p in map(compile_re, patterns) if p.search(endpoint)
         )
@@ -179,20 +179,20 @@ class Minify:
 
         return matches, has_matches
 
-    def main(self, response):
+    async def main(self, response):
         """Where a dragon once lived!
 
         Parameters
         ----------
-        response: Flask.response
+        response: Quart.response
             instance form the `after_request` handler.
 
         Returns
         -------
-        Flask.Response
-            minified flask response if it fits the requirements.
+        Quart.Response
+            minified quart response if it fits the requirements.
         """
-        _, bypassed = self.get_endpoint_matches(self.bypass)
+        _, bypassed = await self.get_endpoint_matches(self.bypass)
         should_bypass = bypassed or self.passive
         html, cssless, js = does_content_type_match(response)
         should_minify = (
@@ -202,9 +202,9 @@ class Minify:
         if should_minify and not should_bypass:
             if html or (self.static and (cssless or js)):
                 response.direct_passthrough = False
-                content = response.get_data(as_text=True)
+                content = await response.get_data(as_text=True)
                 tag = "html" if html else "script" if js else "style"
-                minified = self.get_minified_or_cached(content, tag)
+                minified = await self.get_minified_or_cached(content, tag)
 
                 response.set_data(minified)
 

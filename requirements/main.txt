@@ -1,5 +1,5 @@
 six
-flask
+quart
 lesscpy
 htmlminf
 jsmin

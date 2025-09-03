@@ -2,7 +2,7 @@ import os
 import sys
 
 import pytest
-from flask import send_from_directory
+from quart import send_from_directory
 
 from .constants import (
     FALSE_JS,

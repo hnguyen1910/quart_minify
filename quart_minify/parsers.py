@@ -13,8 +13,8 @@ try:
 except Exception:
     minify_go = None
 
-from flask_minify.exceptions import FlaskMinifyException
-from flask_minify.utils import get_tag_contents
+from quart_minify.exceptions import QuartMinifyException
+from quart_minify.utils import get_tag_contents
 
 
 class ParserBase(metaclass=ABCMeta):
@@ -144,9 +144,9 @@ class Parser:
         self.fail_safe = fail_safe
 
         if self.has_go_parser and not minify_go:
-            raise FlaskMinifyException(
+            raise QuartMinifyException(
                 f"Cannot use any Go parsers without installing "
-                "Go optional dependency: `pip install flask-minify[go]`"
+                "Go optional dependency: `pip install quart-minify[go]`"
             )
 
     @property
@@ -176,7 +176,7 @@ class Parser:
 
     def minify(self, content, tag):
         if tag not in self.parsers:
-            raise FlaskMinifyException('Unknown tag "{0}"'.format(tag))
+            raise QuartMinifyException('Unknown tag "{0}"'.format(tag))
 
         parser = self.parsers[tag]()
         parser.parser = self
@@ -198,7 +198,7 @@ class Parser:
             minified_or_content = parser.executer(content, **runtime_options)
         except Exception as e:
             if not self.fail_safe:
-                raise FlaskMinifyException(
+                raise QuartMinifyException(
                     'Failed to minify "{0}" content'.format(tag)
                 ) from e
 

@@ -2,10 +2,10 @@ from unittest import mock
 
 import pytest
 
-from flask_minify import minify, parsers
-from flask_minify.cache import MemoryCache
-from flask_minify.exceptions import FlaskMinifyException
-from flask_minify.utils import does_content_type_match, is_empty
+from quart_minify import minify, parsers
+from quart_minify.cache import MemoryCache
+from quart_minify.exceptions import QuartMinifyException
+from quart_minify.utils import does_content_type_match, is_empty
 
 from .constants import (
     COMPILED_LESS_RAW,
@@ -61,7 +61,7 @@ class TestMinifyRequest:
         self.caching_limit = 1
         self.parsers = {}
         self.go = True
-        self.patch = mock.patch.multiple("flask_minify.main", request=self.mock_request)
+        self.patch = mock.patch.multiple("quart_minify.main", request=self.mock_request)
 
         self.patch.start()
 
@@ -128,27 +128,27 @@ class TestParsers:
 
         parser = parsers.Parser({"style": CustomParser})
 
-        with pytest.raises(FlaskMinifyException):
+        with pytest.raises(QuartMinifyException):
             parser.minify(LESS_RAW, "style")
 
     def test_default_parsers_when_go_enabled_and_dependancy_missing(self):
-        with mock.patch("flask_minify.parsers.minify_go", None):
+        with mock.patch("quart_minify.parsers.minify_go", None):
             parser = parsers.Parser(go=True)
             assert parser.default_parsers == parser._default_parsers
 
     def test_default_parsers_when_go_enabled_and_dependency_present(self):
-        with mock.patch("flask_minify.parsers.minify_go"):
+        with mock.patch("quart_minify.parsers.minify_go"):
             parser = parsers.Parser(go=True)
             assert parser.default_parsers == parser._go_default_parsers
 
     def test_default_parsers_when_go_disabled_and_dependency_present(self):
-        with mock.patch("flask_minify.parsers.minify_go"):
+        with mock.patch("quart_minify.parsers.minify_go"):
             parser = parsers.Parser(go=False)
             assert parser.default_parsers == parser._default_parsers
 
     def test_go_parsers_passed_with_go_enabled_and_dependency_missing_exception(self):
-        with mock.patch("flask_minify.parsers.minify_go", None):
-            with pytest.raises(FlaskMinifyException):
+        with mock.patch("quart_minify.parsers.minify_go", None):
+            with pytest.raises(QuartMinifyException):
                 parsers.Parser(parsers=parsers.Parser._go_default_parsers, go=True)
 
 

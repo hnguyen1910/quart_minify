@@ -1,7 +1,7 @@
 import os
 
 import pytest
-from flask import send_from_directory
+from quart import send_from_directory
 
 from .constants import (
     FALSE_LESS,

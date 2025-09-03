@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
-from flask_minify.utils import get_optimized_hashing
+from quart_minify.utils import get_optimized_hashing
 
 
 class CacheBase(metaclass=ABCMeta):
@@ -8,15 +8,15 @@ class CacheBase(metaclass=ABCMeta):
         self.store_key_getter = store_key_getter
 
     @abstractmethod
-    def __getitem__(self, key):
+    async def get(self, key):
         pass
 
     @abstractmethod
-    def __setitem__(self, key, value):
+    async def set(self, key, value):
         pass
 
     @abstractmethod
-    def get_or_set(self, key, getter):
+    async def get_or_set(self, key, getter):
         pass
 
     @abstractmethod
@@ -30,37 +30,35 @@ class MemoryCache(CacheBase):
         self.limit = limit
         self.hashing = get_optimized_hashing()
         self._cache = {}
-
-    @property
-    def store(self):
+        
+    async def store(self):
         if self.store_key_getter:
-            return self._cache.setdefault(self.store_key_getter(), {})
+            return self._cache.setdefault(await self.store_key_getter(), {})
 
         return self._cache
 
-    @property
-    def limit_exceeded(self):
-        return len(self.store) >= self.limit
+    async def limit_exceeded(self):
+        return len(await self.store()) >= self.limit
 
-    def __getitem__(self, key):
-        return self.store.get(key)
+    async def get(self, key):
+        return (await self.store()).get(key)
 
-    def __setitem__(self, key, value):
-        if self.limit_exceeded:
-            self.store.popitem()
+    async def set(self, key, value):
+        if (await self.limit_exceeded()):
+            (await self.store()).popitem()
 
-        self.store.update({key: value})
+        (await self.store()).update({key: value})
 
-    def get_or_set(self, key, getter):
+    async def get_or_set(self, key, getter):
         if self.limit == 0:
             return getter()
 
         hashed_key = self.hashing(key.encode("utf-8")).hexdigest()
 
-        if not self[hashed_key]:
-            self[hashed_key] = getter()
+        if not (await self.get(hashed_key)):
+            await self.set(hashed_key, getter())
 
-        return self[hashed_key]
+        return await self.get(hashed_key)
 
     def clear(self):
         del self._cache

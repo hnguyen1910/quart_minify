@@ -10,7 +10,7 @@ test_requirements = []
 requirements_path = path.join(basedir, "requirements")
 
 
-with open(path.join(basedir, path.join("flask_minify", "about.py"))) as f:
+with open(path.join(basedir, path.join("quart_minify", "about.py"))) as f:
     exec(f.read())  # nosec
 
 with open(path.join(basedir, "README.md")) as f:
@@ -30,7 +30,7 @@ if path.isdir(requirements_path):
         ]
 else:
     requires_path = path.join(
-        path.join(basedir, "Flask_Minify.egg-info"), "requires.txt"
+        path.join(basedir, "Quart_Minify.egg-info"), "requires.txt"
     )
 
     with open(requires_path) as f:
@@ -41,10 +41,10 @@ supported_python_classifiers = [
 ]
 
 setup(
-    name="Flask-Minify",
+    name="Quart-Minify",
     version=__version__,
-    url="https://github.com/mrf345/flask_minify/",
-    download_url="https://github.com/mrf345/flask_minify/archive/%s.tar.gz"
+    url="https://github.com/mrf345/quart_minify/",
+    download_url="https://github.com/mrf345/quart_minify/archive/%s.tar.gz"
     % __version__,
     license=__license__,
     author=__author__,
@@ -52,7 +52,7 @@ setup(
     description=__doc__,
     long_description=long_description,
     long_description_content_type="text/markdown",
-    packages=["flask_minify"],
+    packages=["quart_minify"],
     zip_safe=False,
     include_package_data=True,
     platforms="any",
@@ -60,7 +60,7 @@ setup(
     setup_requires=requirements,
     extras_require=optional_requirements,
     keywords=[
-        "flask",
+        "quart",
         "extension",
         "minifer",
         "htmlmin",

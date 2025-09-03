@@ -1,8 +1,8 @@
-from flask import Flask
+from quart import Quart
 
-from flask_minify import minify
-from flask_minify import parsers as minify_parsers
-from flask_minify.decorators import minify as decorator
+from quart_minify import minify
+from quart_minify import parsers as minify_parsers
+from quart_minify.decorators import minify as decorator
 
 from .constants import (
     CSS_EDGE_CASES,
@@ -18,7 +18,7 @@ from .constants import (
 
 
 def create_app(go=True):
-    app = Flask(__name__)
+    app = Quart(__name__)
     parsers = {"style": minify_parsers.Lesscpy}
     store_minify = minify(
         app=app,
